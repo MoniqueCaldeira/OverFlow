@@ -18,26 +18,24 @@ var balls = [];
 var pilha, pilha1;
 var ground;
 var exit = [];
-var imgReload, reset;
 var jogada = 0;
 var maquinaPop, maquinaPush;
 var collisionGroup, collisionSinalBottomGroup, collisionSinalTopGroup;
 var totalPush = 0;
 
 
-function preload(){
-  imgReload = loadImage("assets/reload.png");
-}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+
+  var nivel = createElement("h1", "Nível 01");
+  nivel.position(width/2 - 20 ,30);
+
+  tutorial();
+
   collisionGroup = new Group();
   collisionSinalBottomGroup = new Group();
   collisionSinalTopGroup = new Group();
-
-  reset = createSprite(windowWidth - 80, 80);
-  reset.addImage(imgReload);
-  reset.scale = 0.03;
 
   engine = Engine.create();
   world = engine.world;
@@ -84,7 +82,6 @@ function draw() {
   limit(pilha);
   limit(pilha1);
 
-  reload();
   cursor('grab');
   
   for(var i = 0; i < balls.length; i++){
@@ -94,14 +91,11 @@ function draw() {
     }
   }
 
-  if(keyDown("space")){
-    //let fs = fullscreen();
-    //fullscreen(!fs);
-    console.log("Caixa 0: " + balls[0].op.topo, balls[0].op.pos, balls[0].op.pilhaAtual);
-    console.log("Caixa 1: " + balls[1].op.topo, balls[1].op.pos, balls[1].op.pilhaAtual);
-    console.log("Caixa 2: " + balls[2].op.topo, balls[2].op.pos, balls[2].op.pilhaAtual);
-    console.log("Caixa 3: " + balls[3].op.topo, balls[3].op.pos, balls[3].op.pilhaAtual);
+  //Abrir menu
+  if(keyDown("esc")){
+    menuJogo();
   }
+
   
   //Verifica se o jogador colocou todas as bolas corretamente e ganhou o jogo
   if(totalPush === 4){
@@ -137,12 +131,7 @@ function mousepressed(){
   }
 }
 
-function reload(){
 
-  if(mousePressedOver(reset)){
-    location.reload();
-  }
-}
 
 function checkPush(){
   for(var c in balls){

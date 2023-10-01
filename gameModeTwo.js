@@ -17,27 +17,23 @@ var balls = [];
 var pilha, pilha1;
 var ground;
 var exit = [];
-var imgReload, reset;
 var jogada = 0;
 var maquinaPop, maquinaPush;
 var collisionGroup, collisionSinalBottomGroup, collisionSinalTopGroup;
 var totalPush = 0;
 
 
-function preload() {
-  imgReload = loadImage("assets/reload.png");
-}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+
+  var nivel = createElement("h1", "Nível 02");
+  nivel.position(width/2 - 20 ,30);
 
   collisionGroup = new Group();
   collisionSinalBottomGroup = new Group();
   collisionSinalTopGroup = new Group();
 
-  reset = createSprite(windowWidth - 80, 80);
-  reset.addImage(imgReload);
-  reset.scale = 0.03;
 
   engine = Engine.create();
   world = engine.world;
@@ -75,8 +71,7 @@ function setup() {
   maquinaPop = new MachinePop(200, windowHeight - 230, 2);
   maquinaPush = new MachinePush(windowWidth - 200, windowHeight - 230, 2);
 
-  console.log(balls[3].color);
-  //console.log(maquinaPush.ball0.shapeColor);
+  
 }
 
 function draw() {
@@ -105,7 +100,6 @@ function draw() {
   limit(pilha);
   limit(pilha1);
 
-  reload();
   cursor('grab');
 
   for (var i = 0; i < balls.length; i++) {
@@ -115,7 +109,10 @@ function draw() {
     }
   }
 
-
+  //Abrir menu
+  if(keyDown("esc")){
+    menuJogo();
+  }
 
   if (totalPush === 4) {
     //Mudar para o modo de Jogo 3
@@ -151,12 +148,6 @@ function mousepressed() {
   }
 }
 
-function reload() {
-
-  if (mousePressedOver(reset)) {
-    location.reload();
-  }
-}
 
 function checkPush() {
   for (var c in balls) {
