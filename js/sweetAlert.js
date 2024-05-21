@@ -18,7 +18,7 @@ function winner(atualNivel, poxNivel) {
 function loser(atualNivel) {
 
    Swal.fire({
-      title: `Essa não é a Bola Correta \n O Nível será reiciado!`,
+      title: `Essa não é a Bola Correta \n O Nível será Reiniciado!`,
       confirmButtonText: 'Reiniciar Nível',
    }).then((result) => {
       /* Read more about isConfirmed, isDenied below */

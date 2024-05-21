@@ -2,10 +2,11 @@ class Circle{
    constructor(x,y){
       
       var options = {
-         restitution: 0.3,
+         restitution: 0.1,
          isStatic: true,
-         density: 0.1,
-         friction:0.5
+         density: 1,
+         friction:1,
+         frictionAir:0.07
       }
 
       this.op = {
@@ -18,7 +19,7 @@ class Circle{
 
 
       this.color = [random(0,255), random(0,255), random(0,255)];
-      this.radius = 33;
+      this.radius = 35;
       this.body = Bodies.circle(x,y,this.radius,options);
       World.add(world, this.body);
 
@@ -40,7 +41,7 @@ class Circle{
       ellipseMode(RADIUS);
       noStroke();
       fill(this.color);
-      ellipse(this.body.position.x, this.body.position.y, this.radius);
+      ellipse(this.body.position.x, this.body.position.y, this.radius-5);
       pop();
    }
 
@@ -51,5 +52,7 @@ class Circle{
       this.sinalBottom.x = this.body.position.x;
       this.sinalBottom.y = this.body.position.y + 32;
    }
+
+
 
 }

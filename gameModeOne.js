@@ -22,6 +22,8 @@ var jogada = 0;
 var maquinaPop, maquinaPush;
 var collisionGroup, collisionSinalBottomGroup, collisionSinalTopGroup;
 var totalPush = 0;
+let order = [2,0,3,1]
+let stop = false;
 
 
 
@@ -30,6 +32,7 @@ function setup() {
 
   var nivel = createElement("h1", "Nível 01");
   nivel.position(width/2 - 20 ,30);
+
 
   tutorial();
 
@@ -51,7 +54,7 @@ function setup() {
   ground = new Ground(windowWidth/2, windowHeight-25, windowWidth,50);
 
   maquinaPop = new MachinePop(200,windowHeight-230,2);
-  maquinaPush = new MachinePush(windowWidth-200,windowHeight-230,2);
+  maquinaPush = new MachinePush(windowWidth-200,windowHeight-230,2, order);
 
   console.log(balls[3].color);
   //console.log(maquinaPush.ball0.shapeColor);
@@ -88,6 +91,12 @@ function draw() {
     if(balls[i] !== undefined){
       balls[i].display();
       balls[i].update();
+      
+      var colisao = Matter.SAT.collides(balls[i].body, ground.body);
+      if (colisao.collided && !stop) {
+        stop = true;
+        loser("gameModeOne.html")
+      }
     }
   }
 
@@ -105,6 +114,7 @@ function draw() {
     //save(balls[0].op, 'my.json');
   }
  
+
   mouseClick();
 
   mousepressed();
@@ -126,6 +136,7 @@ function mousepressed(){
       }
       else if(!mouseIsPressed){
           balls[n].op.mouseActive = false;
+          Matter.Body.setVelocity(balls[n].body, { x: 0, y: balls[n].body.velocity.y });
       }
     }
   }

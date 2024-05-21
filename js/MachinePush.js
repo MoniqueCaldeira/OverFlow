@@ -1,5 +1,5 @@
 class MachinePush{
-   constructor(x,y,scale){
+   constructor(x,y,scale, order){
       
       var options = {
          isStatic: true,
@@ -21,7 +21,7 @@ class MachinePush{
 
       for(var i = 0; i < 4; i++){
          var ballResult = createSprite(this.ww - 185,this.wh - 360 + (80*i),35,35);
-         ballResult.shapeColor = balls[4-i-1].color;
+         ballResult.shapeColor = balls[order[i]].color;
          this.ballsResult.push(ballResult);
       }
 

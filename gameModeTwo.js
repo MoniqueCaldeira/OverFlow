@@ -6,7 +6,6 @@ Duas maquinas Pop (deixar o usuarios vê as bolas, não vê as bolas ou vê apen
 
 */
 
-
 const World = Matter.World;
 const Bodies = Matter.Bodies;
 const Engine = Matter.Engine;
@@ -21,7 +20,8 @@ var jogada = 0;
 var maquinaPop, maquinaPush;
 var collisionGroup, collisionSinalBottomGroup, collisionSinalTopGroup;
 var totalPush = 0;
-
+let order = [3,5,2,1]
+let stop = false;
 
 
 function setup() {
@@ -29,6 +29,7 @@ function setup() {
 
   var nivel = createElement("h1", "Nível 02");
   nivel.position(width/2 - 20 ,30);
+
 
   collisionGroup = new Group();
   collisionSinalBottomGroup = new Group();
@@ -38,25 +39,31 @@ function setup() {
   engine = Engine.create();
   world = engine.world;
 
-  for (var c = 5; c >= 0; c--) {
+  for (var c = 7; c >= 0; c--) {
     switch (c) {
       case 0:
-        var ball = new Circle(90, windowHeight - 350);
+        var ball = new Circle(-90, windowHeight - 350);
         break;
       case 1:
-        var ball = new Circle(180, windowHeight - 350);
+        var ball = new Circle(-180, windowHeight - 350);
         break;
       case 2:
-        var ball = new Circle(270, windowHeight - 350);
+        var ball = new Circle(-270, windowHeight - 350);
         break;
       case 3:
-        var ball = new Circle(90, windowHeight - 270);
+        var ball = new Circle(-90, windowHeight - 270);
         break;
       case 4:
-        var ball = new Circle(180, windowHeight - 270);
+        var ball = new Circle(-180, windowHeight - 270);
         break;
       case 5:
-        var ball = new Circle(270, windowHeight - 270);
+        var ball = new Circle(-270, windowHeight - 270);
+        break;
+      case 6:
+        var ball = new Circle(-270, windowHeight - 270);
+        break;
+      case 7:
+        var ball = new Circle(-270, windowHeight - 270);
         break;
       default: break;
     }
@@ -69,7 +76,7 @@ function setup() {
   ground = new Ground(windowWidth / 2, windowHeight - 25, windowWidth, 50);
 
   maquinaPop = new MachinePop(200, windowHeight - 230, 2);
-  maquinaPush = new MachinePush(windowWidth - 200, windowHeight - 230, 2);
+  maquinaPush = new MachinePush(windowWidth - 200, windowHeight - 230, 2, order);
 
   
 }
@@ -81,7 +88,6 @@ function draw() {
   for (var i in balls) {
     for (var c in balls) {
 
-
       //Verifica se a parte de baixo da caixa encostou na base da Maquina Pop
       if (balls[i].sinalBottom.collide(collisionGroup)) {
         balls[i].op.topo = true;
@@ -89,6 +95,7 @@ function draw() {
     }
   }
 
+  
   pilha.display();
   pilha1.display();
   maquinaPush.display();
@@ -106,13 +113,20 @@ function draw() {
     if (balls[i] !== undefined) {
       balls[i].display();
       balls[i].update();
+      var colisao = Matter.SAT.collides(balls[i].body, ground.body);
+      if (colisao.collided && !stop) {
+        stop = true;
+        loser("gameModeTwo.html")
+      }
     }
   }
 
+  
   //Abrir menu
   if(keyDown("esc")){
     menuJogo();
   }
+  
 
   if (totalPush === 4) {
     //Mudar para o modo de Jogo 3
@@ -139,10 +153,11 @@ function mousepressed() {
       }
 
       if (balls[n].op.mouseActive && mouseIsPressed) {
-        Matter.Body.setPosition(balls[n].body, { x: mouseX, y: mouseY });
+        Matter.Body.setPosition(balls[n].body, { x: mouseX, y: mouseY-25});
       }
       else if (!mouseIsPressed) {
         balls[n].op.mouseActive = false;
+        Matter.Body.setVelocity(balls[n].body, { x: 0, y: balls[n].body.velocity.y });
       }
     }
   }
@@ -160,6 +175,8 @@ function checkPush() {
         balls[c].op.pilhaAtual = "maquinaPush";
         World.remove(world, balls[c].body);
         totalPush = 1;
+
+       
         //delete balls[c];
       }
 
@@ -171,6 +188,8 @@ function checkPush() {
         balls[c].op.pilhaAtual = "maquinaPush";
         World.remove(world, balls[c].body);
         totalPush = 2;
+
+        
         //delete balls[c];
       }
       if (maquinaPush.ballsResult[1].shapeColor === balls[c].color && totalPush < 1) {
@@ -186,6 +205,8 @@ function checkPush() {
         balls[c].op.pilhaAtual = "maquinaPush";
         World.remove(world, balls[c].body);
         totalPush = 3;
+       
+       
         //delete balls[c];
       }
       if (maquinaPush.ballsResult[2].shapeColor === balls[c].color && totalPush < 2) {
@@ -201,6 +222,8 @@ function checkPush() {
         balls[c].op.pilhaAtual = "maquinaPush";
         World.remove(world, balls[c].body);
         totalPush = 4;
+        
+      
         //delete balls[c];
       }
       if (maquinaPush.ballsResult[3].shapeColor === balls[c].color && totalPush < 3) {
@@ -234,9 +257,17 @@ function mouseClick() {
       Matter.Body.setPosition(balls[4].body, { x: maquinaPop.sprite.x + 120, y: maquinaPop.sprite.y })
       Matter.Body.setStatic(balls[4].body, false);
     }
-    else if (!balls[3].op.topo && balls[5].op.pilhaAtual === "maquinaPop" && (balls[4].op.pilhaAtual === "pilha" || balls[4].op.pilhaAtual === "maquinaPush")) {
+    else if (!balls[5].op.topo && balls[5].op.pilhaAtual === "maquinaPop" && (balls[4].op.pilhaAtual === "pilha" || balls[4].op.pilhaAtual === "maquinaPush")) {
       Matter.Body.setPosition(balls[5].body, { x: maquinaPop.sprite.x + 120, y: maquinaPop.sprite.y })
       Matter.Body.setStatic(balls[5].body, false);
+    }
+    else if (!balls[6].op.topo && balls[6].op.pilhaAtual === "maquinaPop" && (balls[5].op.pilhaAtual === "pilha" || balls[5].op.pilhaAtual === "maquinaPush")) {
+      Matter.Body.setPosition(balls[6].body, { x: maquinaPop.sprite.x + 120, y: maquinaPop.sprite.y })
+      Matter.Body.setStatic(balls[6].body, false);
+    }
+    else if (!balls[7].op.topo && balls[7].op.pilhaAtual === "maquinaPop" && (balls[6].op.pilhaAtual === "pilha" || balls[6].op.pilhaAtual === "maquinaPush")) {
+      Matter.Body.setPosition(balls[7].body, { x: maquinaPop.sprite.x + 120, y: maquinaPop.sprite.y })
+      Matter.Body.setStatic(balls[7].body, false);
     }
   }
 }
